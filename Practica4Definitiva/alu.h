@@ -12,6 +12,12 @@ public:
     QString sumaBinario(int a, int b);
 
     QString complemento2(int num);
+
+private:
+
+    int signoResultado;
+    int mantisaResultado;
+    int exponenteResultado;
 };
 
 #endif // ALU_H

@@ -275,7 +275,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
         }
 
         //Ajustamos el exponente de la suma
-        //OJO, hay que repasar esto, porque no se si se suma 1 porque el ejemplo es así, o porque es 1 :(
+        //OJO, hay que repasar esto, porque no se si se suma 1 porque el ejemplo es así, o porque es 1 :( NOTA ALI: SI QUE ES ASI CREO (siempre 1)
         exponenteSumaInt = exponenteSumaInt + 1;
         exponenteSuma = (char)exponenteSumaInt;
 
@@ -287,7 +287,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
         for (int i=0; i<Pstr.length(); i++){
             if (Pstr[i] == '1'){
                 K = i;
-                break;
+                break; //NOTA ALI: No se si es muy bueno meter un break dentro de aquí, mejor evitarlo
             }
         }
 
@@ -296,13 +296,22 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
             st = r || st;
             r = g;
 
-        }else{
+        }
+        if(K>1){ //NOTA ALI: Lo he cambiado a k>1 en vez de else, pq cuando k=1 no tiene que entrar aquí
             r = 0;
             st = 0;
         }
 
-        //Desplazar (P, g) a la izquierda K bits FALTA HACERLO
+        //Desplazar (P, g) a la izquierda K bits FALTA HACERLO //NOTA ALI: hecho pero revisar -> he metido por la derecha g
+        QString newP2 = QString::number(P); //Paso P a QString para poder trabajar con el mejor
+        newP2.remove(0, K); //Borramos las primeras K posiciones de P
+        for(int i=0; i<K; i++){ //Añadimas K veces por la derecha g
 
+            newP2 = newP2 + QString::number(g);
+        }
+
+        Pstring = newP2; //Actualizo valor de P en formato QString
+        P = newP2.toInt(); //Actualizao valor de P en formato int
 
         //ajustar el exponente de la suma
         exponenteSumaInt = exponenteSumaInt - K;
@@ -317,7 +326,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
     if ((r==1 && st ==1) || (r == 1 && st == 0 && P == 1)){
         //P = P+1
-        QString sumaP = sumaBinario(P, 1);
+        QString sumaP = sumaBinario(P, 00000000000000000000001); //NOTA ALI: he cambiado el 1 por 1 pero con 23 bits como tiene P porque sino creo que nuestro metodo no funciona
         // C = acarreo
         if(sumaP.length() == 24){ //Esto significa que no ha habido acarreo en el utimo digito sumado
 
@@ -338,12 +347,25 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
         if (c2 == 1){
             //Desplazar un bit a la derecha (C2, P) y ajustar el exponente de la suma FALTA ESTA PARTE
+            QString newP3 = QString::number(P); //Paso P a QString para poder trabajar mejor con el
+            newP3.remove(newP3.length()-1, 1); //Quito el ultimo digito de P
+            newP3 = QString::number(c2) + newP3; //Le añado por delanter c2
+
+            Pstring = newP3; //Actualizo valor de P en formato QString
+            P = newP3.toInt(); //Actualizao valor de P en formato int
+
+            exponenteSumaInt = exponenteSumaInt + 1;
+            exponenteSuma = QString::number(exponenteSumaInt);
+
+            this->exponenteResultado = exponenteSumaInt; //NOTA ALI: ya asignamos al atributo de clase que representa el exponente del resultado el valor calculado
         }
 
 
     }
 
     int mantisaSuma = P;
+    //NOTA ALI: Aqui lo guardo ya en el atributo de clase que representa la mantisa del resultaddo:
+    this->mantisaResultado = P;
 
 
     //12. Calcular el signo del resultado
@@ -352,9 +374,13 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
     if (Operandos_intercambiados == false && Complemento_P == true){
         signoSuma = signoBint;
+        this->signoResultado = signoBint;
     } else{
         signoSuma = signoAint;
+        this->signoResultado = signoAint;
     }
 
+    /*En este punto ya deberían estar guardados los valores de signo, exponente y mantisa en sus correspondientes atributos de clase,
+     para poder simplemente al clickar sobre el igual de la interfaz de usuario pasarlo a decimal y hexadecimal y mostrarlo */
 
 }
