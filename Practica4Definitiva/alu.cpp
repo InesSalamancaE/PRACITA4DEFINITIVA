@@ -1,7 +1,10 @@
 #include "alu.h"
 #include<bitset>
+#include <string>
 
 using std::bitset;
+#include <iostream>
+using namespace std;
 
 alu::alu()
 {
@@ -251,6 +254,62 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
         P = Pcomplemento.toInt();
     }
 
-    //10.
+    //10.Si los signos son iguales y c1=0:
+    QString Pstr = QString::number(P);
+    if ((signoAint==signoBint) && (c1==0)){
+        //St = OR()g, r, st), que inicialmente será 0, y r = P0
+        st = g || r || st;
+        r = Pstr.at(0).digitValue();
+        //Desplazar un bit a la derecha, introducimos el bit C1 por la izquierda
+
+        string cadena;
+        cadena = Pstr.toStdString();
+        string ultimo = cadena.erase(cadena.size() -1, 1);
+        Pstr = QString::fromUtf8(ultimo.c_str());
+
+        if (c1){
+            Pstr = '1' + Pstr;
+
+        } else{
+            Pstr = '0' + Pstr;
+        }
+
+        //Ajustamos el exponente de la suma
+        //OJO, hay que repasar esto, porque no se si se suma 1 porque el ejemplo es así, o porque es 1 :(
+        exponenteSumaInt = exponenteSumaInt + 1;
+        exponenteSuma = (char)exponenteSumaInt;
+
+
+    } else {
+        //Calcular Kbits que es necesario desplazar P para que sea una mantisa normalizada
+        //Para normalizar la mantisa, el primero tiene que ser un 1, por tanto, hacemos un bucle hasta encontrar un 1
+        int K = 0;
+        for (int i=0; i<Pstr.length(); i++){
+            if (Pstr[i] == '1'){
+                K = i;
+                break;
+            }
+        }
+
+
+        if (K == 0){
+            st = r || st;
+            r = g;
+
+        }else{
+            r = 0;
+            st = 0;
+        }
+
+        //Desplazar (P, g) a la izquierda K bits
+
+
+        //ajustar el exponente de la suma
+        exponenteSumaInt = exponenteSumaInt - K;
+        exponenteSuma = (char)exponenteSumaInt;
+
+
+
+    }
 
 }
