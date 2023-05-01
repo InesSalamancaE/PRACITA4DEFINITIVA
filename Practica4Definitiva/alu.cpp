@@ -301,7 +301,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
             st = 0;
         }
 
-        //Desplazar (P, g) a la izquierda K bits
+        //Desplazar (P, g) a la izquierda K bits FALTA HACERLO
 
 
         //ajustar el exponente de la suma
@@ -311,5 +311,50 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
 
     }
+
+    //11. Redondear P
+    int c2;
+
+    if ((r==1 && st ==1) || (r == 1 && st == 0 && P == 1)){
+        //P = P+1
+        QString sumaP = sumaBinario(P, 1);
+        // C = acarreo
+        if(sumaP.length() == 24){ //Esto significa que no ha habido acarreo en el utimo digito sumado
+
+            P = sumaP.toInt();
+            Pstring = sumaP;
+
+            c2 = 0;
+        }
+        else{ //Si tiene más de 24 de longitud será que tiene 25 de longitud y es que ha habido acarreo en el ultimo digito sumado
+
+            sumaP.remove(0, 1);
+            P = sumaP.toInt();
+            Pstring = sumaP;
+
+            c2 = 1;
+
+        }
+
+        if (c2 == 1){
+            //Desplazar un bit a la derecha (C2, P) y ajustar el exponente de la suma FALTA ESTA PARTE
+        }
+
+
+    }
+
+    int mantisaSuma = P;
+
+
+    //12. Calcular el signo del resultado
+
+    int signoSuma;
+
+    if (Operandos_intercambiados == false && Complemento_P == true){
+        signoSuma = signoBint;
+    } else{
+        signoSuma = signoAint;
+    }
+
 
 }
