@@ -75,7 +75,6 @@ int alu::binarioADecimal(int binario){
 }
 
 
-
 QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString signoB, QString exponenteB, QString mantisaB){
 
     //Pasamos a int los parámetros del método

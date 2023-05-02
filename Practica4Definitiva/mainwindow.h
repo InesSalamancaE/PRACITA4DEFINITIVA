@@ -39,11 +39,17 @@ private slots:
 
     void on_botonDivision_clicked();
 
-    QString pasarBinario(int numero, int longitud);
+    QString decimalABinario(int numero, int longitud);
 
-    QString pasarHexadecimal(float numero);
+    QString binarioADecimal(QString binario);
+
+    QString binarioAHexadecimal(QString binario);
 
     QString numIEEE(MainWindow::floatNum var);
+
+    QString numIEEEJunto(MainWindow::floatNum var);
+
+    QString quitarEspacios(QString ieeeEspacio);
 
 private:
     Ui::MainWindow *ui;
