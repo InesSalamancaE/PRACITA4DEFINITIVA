@@ -14,6 +14,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//a
 
 void MainWindow::on_botonSuma_clicked()
 {
