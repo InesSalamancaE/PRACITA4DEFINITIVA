@@ -81,7 +81,7 @@ void MainWindow::on_botonDivision_clicked()
 void MainWindow::on_botonEquals_clicked()
 {
     //Se muestra el resultado de la operación que se haya seleccionado
-    ui->decimalResultado->setText(numResDec);
+    ui->decimalResultado->setText(QString::number(numResDec));
     ui->hexaResultado->setText(numResHex);
     ui->ieeeResultado->setText(numResBin);
 }
