@@ -11,6 +11,10 @@ alu::alu()
 
 }
 
+alu::~alu(void){
+
+}
+
 //Método para sumar dos numeros binarios (Pasamos siempre dos nums con el mismo numero de bist)
 QString alu::sumaBinario(int Numa, int Numb){
 
@@ -53,6 +57,21 @@ QString alu::sumaBinario(int Numa, int Numb){
     }
 
     return solucion;
+}
+
+int alu::binarioADecimal(int binario){
+    int decimal=0;
+    QString binarioString = QString::number(binario);
+    int longitud = binarioString.length();
+    int contador = longitud-1;
+
+    for(int i=0; i<longitud; i++){
+        decimal=decimal+(binarioString[i].digitValue()*2^contador);
+        contador--;
+    }
+
+
+    return decimal;
 }
 
 
@@ -112,10 +131,10 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     for(int i=0; i<ebComplemento.length(); i++){ //cambiamos los 0s por 1s y los 1s por 0s
 
         if(ebComplemento[i]=='0'){
-            ebComplemento[i]=='1';
+            ebComplemento[i]='1';
         }
         else{
-            ebComplemento[i]=='0';
+            ebComplemento[i]='0';
         }
     } //Aqui acaba el calculo del complemento a 2 de eb
 
@@ -129,10 +148,10 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
         for(int i=0; i<mbComplemento.length(); i++){ //cambiamos los 0s por 1s y los 1s por 0s
 
             if(mbComplemento[i]=='0'){
-                mbComplemento[i]=='1';
+                mbComplemento[i]='1';
             }
             else{
-                mbComplemento[i]=='0';
+                mbComplemento[i]='0';
             }
         } //Aqui acaba el calculo del complemento a 2 de eb
 
@@ -150,7 +169,8 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
  //------------------IMPORTANTE: PASAR d A DECIMAL PARA PODER ACCEDER A LAS POSICIONES (d-1), (d-2),... !!! SI NO LO HACEMOS LO DE ABAJO DE ESTE PASO NO VA A FUNCIONAR-------------------------
  //No lo hago yo ahora pq creo que Magda tenia una funcion que le paso guille que ya lo hace  y para no perder tiempo
-    int dInt = d.toInt();
+    int dIntBinario = d.toInt();
+    int dInt = binarioADecimal(dIntBinario);
 
     if(dInt == 1){ //Si d=1 solo existe g, no existe ni r ni st
 
@@ -244,10 +264,10 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
         for(int i=0; i<Pcomplemento.length(); i++){ //cambiamos los 0s por 1s y los 1s por 0s
 
             if(Pcomplemento[i]=='0'){
-                Pcomplemento[i]=='1';
+                Pcomplemento[i]='1';
             }
             else{
-                Pcomplemento[i]=='0';
+                Pcomplemento[i]='0';
             }
         } //Aqui acaba el calculo del complemento a 2 de eb
 
@@ -383,7 +403,15 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     /*En este punto ya deberían estar guardados los valores de signo, exponente y mantisa en sus correspondientes atributos de clase,
      para poder simplemente al clickar sobre el igual de la interfaz de usuario pasarlo a decimal y hexadecimal y mostrarlo */
 
+    return QString::number(this->signoResultado) + QString::number(this->mantisaResultado) + QString::number(this->exponenteResultado);
 }
 
-QString alu::multiplicacion(){}
-QString alu::division(){}
+QString alu::multiplicacion(){
+    QString answer;
+    return answer;
+
+}
+QString alu::division(){
+    QString answer;
+    return answer;
+}

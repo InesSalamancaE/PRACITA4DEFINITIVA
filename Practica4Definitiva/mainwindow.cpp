@@ -1,6 +1,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "alu.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,6 +18,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_botonSuma_clicked()
 {
+    alu alu;
     //Se suman los valores en decimal //a
     numA.flo = ui->num1->text().toFloat();
     numB.flo = ui->num2->text().toFloat();
@@ -38,7 +40,7 @@ void MainWindow::on_botonSuma_clicked()
     mantisaB.prepend("1");
 
     //Se suman los binarios
-    //alu.suma(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
+    numResBin=alu.suma(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
 
     //Se pasan los valores decimales a hexadecimal y se muestran
     ui->hexa1->setText(pasarHexadecimal(numA.flo));
@@ -49,6 +51,7 @@ void MainWindow::on_botonSuma_clicked()
 
 void MainWindow::on_botonMultiplicacion_clicked()
 {
+    alu alu;
     //Se multiplican los valores en decimal
     numA.flo = ui->num1->text().toFloat();
     numB.flo = ui->num2->text().toFloat();
@@ -70,7 +73,7 @@ void MainWindow::on_botonMultiplicacion_clicked()
     mantisaB.prepend("1");
 
     //Se multiplican los binarios
-    //alu.multiplicacion(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
+    //numResBin=alu.multiplicacion(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
 
     //Se pasan los valores decimales a hexadecimal y se muestran
     ui->hexa1->setText(pasarHexadecimal(numA.flo));
@@ -83,6 +86,7 @@ void MainWindow::on_botonMultiplicacion_clicked()
 
 void MainWindow::on_botonDivision_clicked()
 {
+    alu alu;
     //Se dividen los valores en decimal
     numA.flo = ui->num1->text().toFloat();
     numB.flo = ui->num2->text().toFloat();
@@ -104,7 +108,7 @@ void MainWindow::on_botonDivision_clicked()
     mantisaB.prepend("1");
 
     //Se dividen los binarios
-    //alu.division(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
+    //numResBin=alu.division(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
 
     //Se pasan los valores decimales a hexadecimal y se muestran
     ui->hexa1->setText(pasarHexadecimal(numA.flo));
