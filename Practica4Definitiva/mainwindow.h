@@ -57,5 +57,12 @@ private:
     QString numAHex;
     QString numBHex;
     QString numResHex;
+
+    QString signoA;
+    QString exponenteA;
+    QString mantisaA;
+    QString signoB;
+    QString exponenteB;
+    QString mantisaB;
 };
 #endif // MAINWINDOW_H
