@@ -384,3 +384,6 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
      para poder simplemente al clickar sobre el igual de la interfaz de usuario pasarlo a decimal y hexadecimal y mostrarlo */
 
 }
+
+QString alu::multiplicacion(){}
+QString alu::division(){}

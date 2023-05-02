@@ -13,6 +13,10 @@ public:
 
     QString complemento2(int num);
 
+    QString multiplicacion();
+
+    QString division();
+
 private:
 
     int signoResultado;
