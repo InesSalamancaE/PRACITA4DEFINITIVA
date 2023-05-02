@@ -25,8 +25,8 @@ public:
             }raw;
         };
 
-    floatNum valor1;
-    floatNum valor2;
+    floatNum numA;
+    floatNum numB;
 
 private slots:
 
@@ -39,15 +39,20 @@ private slots:
 
     void on_botonDivision_clicked();
 
+    QString pasarBinario(int numero, int longitud);
+
+    QString pasarHexadecimal(float numero);
+
+    QString numIEEE(MainWindow::floatNum var);
+
 private:
     Ui::MainWindow *ui;
-    int numADec;
-    int numBDec;
-    int numResDec;
 
-    int numABin;
-    int numBBin;
-    int numResBin;
+    float numResDec;
+
+    QString numABin;
+    QString numBBin;
+    QString numResBin;
 
     QString numAHex;
     QString numBHex;

@@ -52,6 +52,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
+        MainWindow->setEnabled(true);
         MainWindow->resize(1099, 600);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
@@ -60,28 +61,37 @@ public:
         num1->setGeometry(QRect(170, 60, 151, 25));
         ieee1 = new QLineEdit(centralwidget);
         ieee1->setObjectName("ieee1");
+        ieee1->setEnabled(true);
         ieee1->setGeometry(QRect(380, 60, 151, 25));
+        ieee1->setReadOnly(true);
+        ieee1->setClearButtonEnabled(false);
         hexa1 = new QLineEdit(centralwidget);
         hexa1->setObjectName("hexa1");
         hexa1->setGeometry(QRect(610, 60, 151, 25));
+        hexa1->setReadOnly(true);
         num2 = new QLineEdit(centralwidget);
         num2->setObjectName("num2");
         num2->setGeometry(QRect(170, 130, 151, 25));
         ieee2 = new QLineEdit(centralwidget);
         ieee2->setObjectName("ieee2");
         ieee2->setGeometry(QRect(380, 130, 151, 25));
+        ieee2->setReadOnly(true);
         hexa2 = new QLineEdit(centralwidget);
         hexa2->setObjectName("hexa2");
         hexa2->setGeometry(QRect(610, 130, 151, 25));
+        hexa2->setReadOnly(true);
         decimalResultado = new QLineEdit(centralwidget);
         decimalResultado->setObjectName("decimalResultado");
         decimalResultado->setGeometry(QRect(170, 340, 151, 25));
+        decimalResultado->setReadOnly(true);
         ieeeResultado = new QLineEdit(centralwidget);
         ieeeResultado->setObjectName("ieeeResultado");
         ieeeResultado->setGeometry(QRect(380, 340, 151, 25));
+        ieeeResultado->setReadOnly(true);
         hexaResultado = new QLineEdit(centralwidget);
         hexaResultado->setObjectName("hexaResultado");
         hexaResultado->setGeometry(QRect(610, 340, 151, 25));
+        hexaResultado->setReadOnly(true);
         labelTiempo1 = new QLabel(centralwidget);
         labelTiempo1->setObjectName("labelTiempo1");
         labelTiempo1->setGeometry(QRect(40, 60, 121, 21));
@@ -127,7 +137,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1099, 24));
+        menubar->setGeometry(QRect(0, 0, 1099, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
