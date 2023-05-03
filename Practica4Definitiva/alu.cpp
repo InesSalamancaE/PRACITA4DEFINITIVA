@@ -72,8 +72,7 @@ int alu::binarioADecimal(int binario){
         binario/=10;
         dec += rem*pow(2,i);
         ++i;
-        //No se debería quitar la última cifra para repetir el proceso? VERIFICAR
-        binario = binario / 10;
+
     }
 
     return dec;
