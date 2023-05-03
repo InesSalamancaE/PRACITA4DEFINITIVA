@@ -1,6 +1,7 @@
 #include "alu.h"
 #include<bitset>
 #include <string>
+#include "mainwindow.h"
 
 using std::bitset;
 #include <iostream>
@@ -60,30 +61,48 @@ QString alu::sumaBinario(int Numa, int Numb){
 }
 
 int alu::binarioADecimal(int binario){
-    int decimal=0;
-    QString binarioString = QString::number(binario);
-    int longitud = binarioString.length();
-    int contador = longitud-1;
 
-    for(int i=0; i<longitud; i++){
-        decimal=decimal+(binarioString[i].digitValue()*2^contador);
-        contador--;
+    int dec = 0;
+    int i = 0;
+    int rem;
+
+    while(binario!=0){
+
+        rem = binario%10;
+        binario/=10;
+        dec += rem*pow(2,i);
+        ++i;
     }
 
+    return dec;
 
-    return decimal;
 }
 
+/* Metodo para ir pudiendo comprobar cosas:
+    1. Tener la variable que se quiere probar.
+    2. Meterla en this->prueba como QString
+    3. En mainwindow he llamado a este metodo para que salga en un lineText lo que queremos probar
+*/
+QString alu::getPrueba(){
+
+    return this->prueba;
+}
 
 QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString signoB, QString exponenteB, QString mantisaB){
+//COMPROBACIOIN DE DATOS DE ENTRADA HECHA: OK
 
     //Pasamos a int los parámetros del método
     int signoAint = signoA.toInt();
     int exponenteAint = exponenteA.toInt();
-    int mantisaAint = mantisaA.toInt();
+    //double mantisaAdouble = mantisaA.toDouble();
+    //int mantisaAint = static_cast<int>(mantisaAdouble);
+    quint64 mantisaAint = static_cast<quint64>(mantisaA.toULongLong());     //PROBLEMA: Al pasar mantisaA a int nos devuelve 0
     int signoBint = signoB.toInt();
     int exponenteBint = exponenteB.toInt();
-    int mantisaBint = mantisaB.toInt();
+    quint64 mantisaBint = mantisaB.toInt();     //PROBLEMA: Al pasar mantisaB a int nos devuelve 0
+
+
+//COMPROBACION INTS: Mantisas no se pasan bien a int. Solucionarlo o trabajar siempre con los QStrings.
 
     //1.Inicialización de variables
     int P = 0;
@@ -93,6 +112,8 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     int n = 24;
     bool Operandos_intercambiados = false;
     bool Complemento_P = false;
+
+//COMPROBACION PASO 1: OK
 
     //2.Siempre hay que sumar NumGrando + NumPequeño.
     if(exponenteAint<exponenteBint){
@@ -120,25 +141,21 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
         Operandos_intercambiados = true;
     }
 
+//COPROBACION PASO 2: OK para numeros positivos (Con negativos peta y se cierra, no se si es de este paso o de los siguientes)
+
     //3.
     int exponenteSumaInt = exponenteAint;
     QString exponenteSuma = exponenteA;
+    int exponenteDecimal = binarioADecimal(exponenteSumaInt); //CALCULADO EN DECIMAL, PQ EN LAS DIAPOS LO USA EN DECIMAL
 
- //---------------------------------------------COMPLEMENTO A 2: PODEMOS PASARLO A METODO EN CASO NECESARIO--------------------------------
-    //ea - eb: Calculamos el complemento a 2 de eb y se lo sumamos a ea
-    QString ebComplemento = sumaBinario(exponenteBint, 00000001);    //Sumamos 1 a exponente de b
-    for(int i=0; i<ebComplemento.length(); i++){ //cambiamos los 0s por 1s y los 1s por 0s
+    int exponenteADecimal = binarioADecimal(exponenteAint);
+    int exponenteBDecimal = binarioADecimal(exponenteBint);
+    int d = exponenteADecimal - exponenteBDecimal;
 
-        if(ebComplemento[i]=='0'){
-            ebComplemento[i]='1';
-        }
-        else{
-            ebComplemento[i]='0';
-        }
-    } //Aqui acaba el calculo del complemento a 2 de eb
+    this->prueba = QString::number(exponenteADecimal) + " " + QString::number(exponenteBDecimal) + " "  + QString::number(d) + " " ;
+    QString dString = QString::number(d);
 
-    int ebComplementoInt = ebComplemento.toInt();
-    QString d = sumaBinario(exponenteAint, ebComplementoInt);
+ //COMPROBACION PASO 3: OK para numeros positivos
 
     //4.Si los signos son distintos, la mantisa de b pasa a ser el complemento
     if(signoAint!=signoBint){
@@ -168,32 +185,30 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
  //------------------IMPORTANTE: PASAR d A DECIMAL PARA PODER ACCEDER A LAS POSICIONES (d-1), (d-2),... !!! SI NO LO HACEMOS LO DE ABAJO DE ESTE PASO NO VA A FUNCIONAR-------------------------
  //No lo hago yo ahora pq creo que Magda tenia una funcion que le paso guille que ya lo hace  y para no perder tiempo
-    int dIntBinario = d.toInt();
-    int dInt = binarioADecimal(dIntBinario);
 
-    if(dInt == 1){ //Si d=1 solo existe g, no existe ni r ni st
+    if(d == 1){ //Si d=1 solo existe g, no existe ni r ni st
 
-        g = Pstring[Pstring.length()-1-dInt-1].digitValue();
+        g = Pstring[Pstring.length()-1-d-1].digitValue();
     }
-    if(dInt == 2 or dInt == 3){ //Si d=2 existen g y r, pero no existe st
+    if(d == 2 or d == 3){ //Si d=2 existen g y r, pero no existe st
 
 /*------------  DUDA: El en clase dijo que cuando d <=3 existen las 3 cosas, pero si d=3, el sitcky queda OR de solo un valor
                 entonces yo creo que si d=3 se queda el valor de sticky inicializado al principio, SOLUCIONAR ESTA DUDA */
 
         //Se empieza a contar P0 desde el final del QString por lo que es (length-1) -d - numero que queramos restar en cada caso
-        g = Pstring[Pstring.length()-1-dInt-1].digitValue();
-        r = Pstring[Pstring.length()-1-dInt-2].digitValue();
+        g = Pstring[Pstring.length()-1-d-1].digitValue();
+        r = Pstring[Pstring.length()-1-d-2].digitValue();
     }
-    if(dInt>3){ //Si d>=3 existen las 3 cosas
+    if(d>3){ //Si d>=3 existen las 3 cosas
 
         //Guarda = Pd-1
-        g = Pstring[Pstring.length()-1-dInt-1].digitValue(); //digitValue es para pasar de QChar a int
+        g = Pstring[Pstring.length()-1-d-1].digitValue(); //digitValue es para pasar de QChar a int
         //Redondeo = Pd-2
-        r = Pstring[Pstring.length()-1-dInt-2].digitValue();
+        r = Pstring[Pstring.length()-1-d-2].digitValue();
         //Sticky = OR(Pd-3,Pd-4,...,P0)
-        int comienzoOR = Pstring[Pstring.length()-1-dInt-3].digitValue();
+        int comienzoOR = Pstring[Pstring.length()-1-d-3].digitValue();
         int OR;
-        for (int i=Pstring.length()-1-dInt-3; i< Pstring.length(); i++){
+        for (int i=Pstring.length()-1-d-3; i< Pstring.length(); i++){
 
             OR = comienzoOR | Pstring[i].digitValue();
             comienzoOR = OR;
@@ -207,11 +222,11 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
         //Paso P a QString para poder desplazar
         QString newP;
-        for(int i=0; i<dInt; i++){ //Agregamos tantos 1s a la izq como d
+        for(int i=0; i<d; i++){ //Agregamos tantos 1s a la izq como d
 
             newP = newP + "1";
         }
-        for(int j=0; j<Pstring.length()-1-dInt; j++){ //Rellenamos con las posiciones de P de 0 a lenght-d
+        for(int j=0; j<Pstring.length()-1-d; j++){ //Rellenamos con las posiciones de P de 0 a lenght-d
 
             newP = newP + Pstring[j];
         }
@@ -222,11 +237,11 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     else{ //Sino, lo mismo pero introduciendo 0s
 
         QString newP;
-        for(int i=0; i<dInt; i++){ //Agregamos tantos 0s a la izq como d
+        for(int i=0; i<d; i++){ //Agregamos tantos 0s a la izq como d
 
             newP = newP + "0";
         }
-        for(int j=0; j<Pstring.length()-1-dInt; j++){ //Rellenamos con las posiciones de P de 0 a lenght-d
+        for(int j=0; j<Pstring.length()-1-d; j++){ //Rellenamos con las posiciones de P de 0 a lenght-d
 
             newP = newP + Pstring[j];
         }

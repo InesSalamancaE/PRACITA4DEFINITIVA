@@ -52,6 +52,7 @@ void MainWindow::on_botonSuma_clicked()
 
     //Se suman los binarios
     numResBin=alu.suma(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
+    ui->PRUEBAS->setText(alu.getPrueba());
 
     //------------ Si funciona, pero como la suma da cosas raras, peta el programa, cuando de bien, descomentamos !!!!!!!!!!!!!!!!
     //Se pasa el resultado de suma binaria a decimal

@@ -20,11 +20,14 @@ public:
 
     QString division();
 
+    QString getPrueba();
+
 private:
 
     int signoResultado;
     int mantisaResultado;
     int exponenteResultado;
+    QString prueba;
 };
 
 #endif // ALU_H
