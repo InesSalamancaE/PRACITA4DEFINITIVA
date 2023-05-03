@@ -158,7 +158,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
     //COMPROBACION PASO 3: OK para numeros positivos
 
-    //4.Si los signos son distintos, la mantisa de b pasa a ser el complemento
+    //4.Si los signos son distintos, la mantisa de b pasa a ser el complemento OK
     if(signoAint!=signoBint){
 
         QString mbComplemento = sumaBinario(mantisaBint, 000000000000000000000001);    //Sumamos 1 a exponente de b
@@ -177,10 +177,10 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
 
     }
 
-    //5.Hacemos que la variable P creada al inicio del método sea igual a la mantisa de b
+    //5.Hacemos que la variable P creada al inicio del método sea igual a la mantisa de b OK
     P = mantisaBint;
 
-    //6.Asignamos el bit de guarda, de recondeo y el sticky
+    //6.Asignamos el bit de guarda, de recondeo y el sticky ALGO NO VA BIEN
     //Paso P a qstring para poder acceder a los valores de posiciones concretas
     QString Pstring = QString::number(P);
 
