@@ -17,13 +17,13 @@ public:
     ~MainWindow();
     union floatNum {
 
-            float flo;
-            struct{
-                unsigned int mantisa : 23;
-                unsigned int exponente : 8;
-                unsigned int signo : 1;
-            }raw;
-        };
+        float flo;
+        struct{
+            unsigned int mantisa : 23;
+            unsigned int exponente : 8;
+            unsigned int signo : 1;
+        }raw;
+    };
 
     floatNum numA;
     floatNum numB;

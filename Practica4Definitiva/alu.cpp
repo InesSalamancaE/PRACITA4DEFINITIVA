@@ -34,7 +34,7 @@ QString alu::sumaBinario(int Numa, int Numb){
                 acarreo = false;
             }
             else{
-               solucion = '0' + solucion;
+                solucion = '0' + solucion;
             }
 
         }
@@ -46,7 +46,7 @@ QString alu::sumaBinario(int Numa, int Numb){
 
             }
             else{
-               solucion = '1' + solucion;
+                solucion = '1' + solucion;
             }
 
         }
@@ -72,6 +72,8 @@ int alu::binarioADecimal(int binario){
         binario/=10;
         dec += rem*pow(2,i);
         ++i;
+        //No se debería quitar la última cifra para repetir el proceso? VERIFICAR
+        binario = binario / 10;
     }
 
     return dec;
@@ -89,7 +91,7 @@ QString alu::getPrueba(){
 }
 
 QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString signoB, QString exponenteB, QString mantisaB){
-//COMPROBACIOIN DE DATOS DE ENTRADA HECHA: OK
+    //COMPROBACIOIN DE DATOS DE ENTRADA HECHA: OK
 
     //Pasamos a int los parámetros del método
     int signoAint = signoA.toInt();
@@ -102,7 +104,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     quint64 mantisaBint = mantisaB.toInt();     //PROBLEMA: Al pasar mantisaB a int nos devuelve 0
 
 
-//COMPROBACION INTS: Mantisas no se pasan bien a int. Solucionarlo o trabajar siempre con los QStrings.
+    //COMPROBACION INTS: Mantisas no se pasan bien a int. Solucionarlo o trabajar siempre con los QStrings.
 
     //1.Inicialización de variables
     int P = 0;
@@ -113,7 +115,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     bool Operandos_intercambiados = false;
     bool Complemento_P = false;
 
-//COMPROBACION PASO 1: OK
+    //COMPROBACION PASO 1: OK
 
     //2.Siempre hay que sumar NumGrando + NumPequeño.
     if(exponenteAint<exponenteBint){
@@ -141,7 +143,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
         Operandos_intercambiados = true;
     }
 
-//COPROBACION PASO 2: OK para numeros positivos (Con negativos peta y se cierra, no se si es de este paso o de los siguientes)
+    //COPROBACION PASO 2: OK para numeros positivos (Con negativos peta y se cierra, no se si es de este paso o de los siguientes)
 
     //3.
     int exponenteSumaInt = exponenteAint;
@@ -155,7 +157,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     this->prueba = QString::number(exponenteADecimal) + " " + QString::number(exponenteBDecimal) + " "  + QString::number(d) + " " ;
     QString dString = QString::number(d);
 
- //COMPROBACION PASO 3: OK para numeros positivos
+    //COMPROBACION PASO 3: OK para numeros positivos
 
     //4.Si los signos son distintos, la mantisa de b pasa a ser el complemento
     if(signoAint!=signoBint){
@@ -183,8 +185,8 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     //Paso P a qstring para poder acceder a los valores de posiciones concretas
     QString Pstring = QString::number(P);
 
- //------------------IMPORTANTE: PASAR d A DECIMAL PARA PODER ACCEDER A LAS POSICIONES (d-1), (d-2),... !!! SI NO LO HACEMOS LO DE ABAJO DE ESTE PASO NO VA A FUNCIONAR-------------------------
- //No lo hago yo ahora pq creo que Magda tenia una funcion que le paso guille que ya lo hace  y para no perder tiempo
+    //------------------IMPORTANTE: PASAR d A DECIMAL PARA PODER ACCEDER A LAS POSICIONES (d-1), (d-2),... !!! SI NO LO HACEMOS LO DE ABAJO DE ESTE PASO NO VA A FUNCIONAR-------------------------
+    //No lo hago yo ahora pq creo que Magda tenia una funcion que le paso guille que ya lo hace  y para no perder tiempo
 
     if(d == 1){ //Si d=1 solo existe g, no existe ni r ni st
 
@@ -192,7 +194,7 @@ QString alu::suma(QString signoA, QString exponenteA, QString mantisaA, QString 
     }
     if(d == 2 or d == 3){ //Si d=2 existen g y r, pero no existe st
 
-/*------------  DUDA: El en clase dijo que cuando d <=3 existen las 3 cosas, pero si d=3, el sitcky queda OR de solo un valor
+        /*------------  DUDA: El en clase dijo que cuando d <=3 existen las 3 cosas, pero si d=3, el sitcky queda OR de solo un valor
                 entonces yo creo que si d=3 se queda el valor de sticky inicializado al principio, SOLUCIONAR ESTA DUDA */
 
         //Se empieza a contar P0 desde el final del QString por lo que es (length-1) -d - numero que queramos restar en cada caso
