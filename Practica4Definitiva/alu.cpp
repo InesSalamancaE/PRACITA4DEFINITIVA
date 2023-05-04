@@ -327,6 +327,7 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
     if (P[P.length()-1] == 0){
         //Desplazar (P,A) un bit a la izquierda PANIC, EN ELLO
 
+
     } else{
         exponenteProducto+=1;
     }
