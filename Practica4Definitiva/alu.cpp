@@ -304,6 +304,35 @@ QString alu::suma(QString signoAString, QString exponenteAString, QString mantis
 QString alu::multiplicacion(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB){
     QString answer;
     //Hay que pasar los signos y los exponentes de QString a int
+    int signoAint = signoAString.toInt();
+    int signoBint = signoBString.toInt();
+    int exponenteAint = exponenteAString.toInt();
+    int exponenteBint = exponenteBString.toInt();
+    int mantisaAint =  mantisaA.toInt();
+    int mantisaBint = mantisaB.toInt();
+
+    //1. Signo del producto es SignoA * SignoB
+    int signoProducto = signoAint * signoBint;
+
+    //2. Exponente del producto es exponenteA + exponenteB
+    int exponenteProducto = exponenteAint + exponenteBint;
+
+    //3. Calculo de la mantisa del producto, mantisaProducto
+    //3.1 (P, A) = mantisaA * mantisaB (Entiendo yo que P es el resultado de la multiplicacion y A es el numero A que se multiplica)
+    int p= mantisaAint * mantisaBint;
+    //3.2 Si (Pn-1 =0) entonces se desplaza (P,A), un bit a la izquierda
+    //De int a Qstring
+    QString P;
+    P.setNum(p);
+    if (P[P.length()-1] == 0){
+        //Desplazar (P,A) un bit a la izquierda PANIC, EN ELLO
+
+    } else{
+        exponenteProducto+=1;
+    }
+    //Creamos el bit de redondeo, por ahora int, con a n-1
+    //int r = ;
+
     return answer;
 
 }
