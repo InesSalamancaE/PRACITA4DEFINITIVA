@@ -10,25 +10,25 @@ public:
 
     QString suma(QString signoA, QString exponenteA, QString mantisaA, QString signoB, QString exponenteB, QString mantisaB);
 
-    QString sumaBinario(QString a, QString b);
-
-    int binarioADecimal(int binario);
-
-    QString complemento2(QString num);
-
     QString multiplicacion(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB);
 
     QString division();
 
-     QString getPrueba();
+    QString complemento2(QString num);
 
+    QString sumaBinario(QString a, QString b);
+
+    int binarioADecimal(int binario);
+
+    QString decimalABinario(int numero, int longitud);
+
+    QString multiplicacionBinaria(QString mantisaA, QString mantisaB);
 
 private:
 
-    int signoResultado;
-    int mantisaResultado;
-    int exponenteResultado;
-     QString prueba;
+    QString signoResultado;
+    QString mantisaResultado;
+    QString exponenteResultado;
 };
 
 #endif // ALU_H

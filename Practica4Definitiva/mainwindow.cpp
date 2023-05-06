@@ -10,6 +10,8 @@
 #include <iomanip>
 #include <cmath>
 #include <bitset>
+#include <iomanip>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -52,15 +54,18 @@ void MainWindow::on_botonSuma_clicked()
 
     //Se suman los binarios
     numResBin=alu.suma(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
-    ui->PRUEBAS->setText(alu.getPrueba());
 
     //------------ Si funciona, pero como la suma da cosas raras, peta el programa, cuando de bien, descomentamos !!!!!!!!!!!!!!!!
     //Se pasa el resultado de suma binaria a decimal
-    //numResDec = binarioADecimal(quitarEspacios(numResBin));
-    numResDec = numA.flo+numB.flo;
+    if(numResBin=="0 11111111 00000000000000000000000"){
+        numResDec = "Infinite ochotumbao";
+    }else{
+        //numResDec = binarioADecimal(quitarEspacios(numResBin));
+        numResDec = QString::number(numA.flo+numB.flo);
+    }
 
     //Se pasa el resultado de suma binaria a hexadecimal
-    //numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
+    numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
 
 }
 
@@ -95,7 +100,7 @@ void MainWindow::on_botonMultiplicacion_clicked()
 
     //Se pasa el resultado de multiplicación binaria a decimal
     //numResDec=binarioADecimal(quitarEspacios(numResBin));
-    numResDec = numA.flo*numB.flo;
+    numResDec = QString::number(numA.flo*numB.flo);
 
     //Se pasa el resultado de multiplicación binaria a hexadecimal
     //numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
@@ -135,7 +140,7 @@ void MainWindow::on_botonDivision_clicked()
 
     //Se pasa el resultado de división binaria a decimal
     //numResDec=binarioADecimal(quitarEspacios(numResBin));
-    numResDec = numA.flo/numB.flo;
+    numResDec = QString::number(numA.flo/numB.flo);
 
     //Se pasa el resultado de división binaria a hexadecimal
     //numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
@@ -145,7 +150,7 @@ void MainWindow::on_botonDivision_clicked()
 void MainWindow::on_botonEquals_clicked()
 {
     //Se muestra el resultado de la operación que se haya seleccionado
-    ui->decimalResultado->setText(QString::number(numResDec));
+    ui->decimalResultado->setText(numResDec);
     ui->hexaResultado->setText(numResHex);
     ui->ieeeResultado->setText(numResBin);
 }
@@ -165,29 +170,20 @@ QString MainWindow::decimalABinario(int numero,int longitud){
 }
 
 QString MainWindow::binarioADecimal(QString binario){
-    QString decimal=0;
-
-    /*
-    QString binarioString = binario;
-    int longitud = binarioString.length();
-    int contador = longitud-1;
-    for(int i=0; i<longitud; i++){
-        decimal=decimal+(binarioString[i].digitValue()*2^contador);
-        contador--;
-    }
-    */
-
-    return decimal;
+    unsigned long long numeroEntero = std::bitset<32>(binario.toStdString()).to_ulong();
+    float numeroDecimal = *(float*)&numeroEntero;
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << numeroDecimal;
+    QString numeroQString = QString::fromStdString(stream.str());
+    return numeroQString;
 }
 
 QString MainWindow::binarioAHexadecimal(QString binario){
-    // Convertimos el QString que representa el número binario en un entero de tipo unsigned long long
-    unsigned long long numeroEntero = std::bitset<64>(binario.toStdString()).to_ullong();
 
-    // Utilizamos la función QString::number() para convertir el número entero en hexadecimal y lo almacenamos en un QString
+    unsigned long long numeroEntero = std::bitset<64>(binario.toStdString()).to_ullong();
     QString numeroHexadecimal = QString::number(numeroEntero, 16);
     numeroHexadecimal.prepend("0x");
-    // Devolvemos el QString que representa el número hexadecimal
+
     return numeroHexadecimal;
 }
 
@@ -214,3 +210,19 @@ QString MainWindow::quitarEspacios(QString ieeeEspacios){
 
     return ieeeEspacios;
 }
+
+void MainWindow::on_botonClear_clicked()
+{
+    this->ui->num1->setText("");
+    this->ui->num2->setText("");
+    this->ui->decimalResultado->setText("");
+
+    this->ui->ieee1->setText("");
+    this->ui->ieee2->setText("");
+    this->ui->ieeeResultado->setText("");
+
+    this->ui->hexa1->setText("");
+    this->ui->hexa2->setText("");
+    this->ui->hexaResultado->setText("");
+}
+

@@ -17,17 +17,6 @@ alu::~alu(void){
 }
 
 
-
-/* Metodo para ir pudiendo comprobar cosas:
-    1. Tener la variable que se quiere probar.
-    2. Meterla en this->prueba como QString
-    3. En mainwindow he llamado a este metodo para que salga en un lineText lo que queremos probar
-*/
-QString alu::getPrueba(){
-
-    return this->prueba;
-}
-
 QString alu::suma(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB){
 
     //Pasamos a int los parámetros del método
@@ -35,6 +24,25 @@ QString alu::suma(QString signoAString, QString exponenteAString, QString mantis
     int exponenteA = binarioADecimal(exponenteAString.toInt());
     int signoB = signoBString.toInt();
     int exponenteB = binarioADecimal(exponenteBString.toInt());
+
+    //EXCEPCION: restar el mismo numero a si mismo (que da 0)
+    if((signoA!=signoB) && (exponenteA==exponenteB) && (mantisaA==mantisaB)){
+
+        this->signoResultado = "0";
+        this->exponenteResultado = "00000000";
+        this->mantisaResultado = "00000000000000000000000";
+
+        return (this->signoResultado + " " +  this->exponenteResultado + " " + this->mantisaResultado);
+    }
+
+    //EXCEPCION: Si el exponenete es mayor de 254, infinito.
+    if(exponenteA>254 || exponenteB>254){
+        this->signoResultado = "0";
+        this->exponenteResultado = "11111111";
+        this->mantisaResultado = "00000000000000000000000";
+
+        return (this->signoResultado + " " +  this->exponenteResultado + " " + this->mantisaResultado);
+    }
 
     //1.Inicialización de variables
     QString p = 0; //Alba: Qstring porque estamos trabajando con mantisas en QString
@@ -64,19 +72,15 @@ QString alu::suma(QString signoAString, QString exponenteAString, QString mantis
         operandos_intercambiados = true;
     }
 
-    //COPROBACION PASO 2: OK para numeros positivos y negativos
-
     //3.
-    int exponenteSumaInt = exponenteA;
+    int exponenteSuma = exponenteA;
     int d = exponenteA - exponenteB;
-
-    //COMPROBACION PASO 3: OK para numeros positivos
 
     //4.Si los signos son distintos, la mantisa de b pasa a ser el complemento OK
     if(signoA!=signoB){
 
         mantisaB = complemento2(mantisaB);
-        complemento_P=true;
+        //complemento_P=true;
     }
 
     //5.Hacemos que la variable P creada al inicio del método sea igual a la mantisa de b OK
@@ -98,7 +102,7 @@ QString alu::suma(QString signoAString, QString exponenteAString, QString mantis
         g = p[p.length()-1-d-1].digitValue();
         r = p[p.length()-1-d-2].digitValue();
     }
-    if(d>=3){ //Si d>=3 existen las 3 cosas
+    if(d>=3 && d<p.length()){ //Si d>=3 existen las 3 cosas
 
         //Guarda = Pd-1
         g = p[p.length()-1-d-1].digitValue(); //digitValue es para pasar de QChar a int
@@ -129,210 +133,181 @@ QString alu::suma(QString signoAString, QString exponenteAString, QString mantis
             p.prepend("0");
         }
     }
-/*
+
     //8.Hacemos: P = mantisaA + P; y c1= acarreo de la suma entera
-    QString sumaMantisayP = sumaBinario(mantisaAint, P);
+    QString sumaMantisayP = sumaBinario(mantisaA, p);
     int c1;
 
     if(sumaMantisayP.length() == 24){ //Esto significa que no ha habido acarreo en el utimo digito sumado
-
-        P = sumaMantisayP.toInt();
-        Pstring = sumaMantisayP;
-
+        p = sumaMantisayP;
         c1 = 0;
-    }
-    else{ //Si tiene más de 24 de longitud será que tiene 25 de longitud y es que ha habido acarreo en el ultimo digito sumado
+    }else{ //Si tiene más de 24 de longitud será que tiene 25 de longitud y es que ha habido acarreo en el ultimo digito sumado
 
         sumaMantisayP.remove(0, 1);
-        P = sumaMantisayP.toInt();
-        Pstring = sumaMantisayP;
-
+        p = sumaMantisayP;
         c1 = 1;
-
     }
 
     //9.Si los signos son distintos Y (Pn-1 = 1) Y c1 = 0: complemento a 2 de p y cambiamos variable complementada_p (Solo se entra si d=0)
-    if((signoAint!=signoBint) && (Pstring[0].digitValue()==1) && (c1==0)){
-
-        QString Pcomplemento = sumaBinario(P , 000000000000000000000001);    //Sumamos 1 a exponente de b
-        for(int i=0; i<Pcomplemento.length(); i++){ //cambiamos los 0s por 1s y los 1s por 0s
-
-            if(Pcomplemento[i]=='0'){
-                Pcomplemento[i]='1';
-            }
-            else{
-                Pcomplemento[i]='0';
-            }
-        } //Aqui acaba el calculo del complemento a 2 de eb
-
-        P = Pcomplemento.toInt();
+    if((signoA!=signoB) && (p[0].digitValue()==1) && (c1==0)){ //Pn-1 es P23, son 24bits y 0 es el de la dcha
+        p = complemento2(p);
+        complemento_P=true;
     }
-
+//Hasta aqui, paso 8 funciona fijo, paso 9 nos fiamos porque no es gran cosha
     //10.Si los signos son iguales y c1=0:
-    QString Pstr = QString::number(P);
-    if ((signoAint==signoBint) && (c1==0)){
+    if ((signoA==signoB) && (c1==1)){
         //St = OR()g, r, st), que inicialmente será 0, y r = P0
         st = g || r || st;
-        r = Pstr.at(0).digitValue();
+        r = p[p.length()-1].digitValue();
+
         //Desplazar un bit a la derecha, introducimos el bit C1 por la izquierda
-
-        string cadena;
-        cadena = Pstr.toStdString();
-        string ultimo = cadena.erase(cadena.size() -1, 1);
-        Pstr = QString::fromUtf8(ultimo.c_str());
-
-        if (c1){
-            Pstr = '1' + Pstr;
-
-        } else{
-            Pstr = '0' + Pstr;
-        }
+        p.remove(p.length()-1,1);
+        p.prepend(QString::number(c1));
 
         //Ajustamos el exponente de la suma
-        //OJO, hay que repasar esto, porque no se si se suma 1 porque el ejemplo es así, o porque es 1 :( NOTA ALI: SI QUE ES ASI CREO (siempre 1)
-        exponenteSumaInt = exponenteSumaInt + 1;
-        exponenteSuma = (char)exponenteSumaInt;
-
+        exponenteSuma = exponenteSuma+1;
+        this->exponenteResultado = decimalABinario(exponenteSuma, 8);
 
     } else {
         //Calcular Kbits que es necesario desplazar P para que sea una mantisa normalizada
         //Para normalizar la mantisa, el primero tiene que ser un 1, por tanto, hacemos un bucle hasta encontrar un 1
-        int K = 0;
-        for (int i=0; i<Pstr.length(); i++){
-            if (Pstr[i] == '1'){
-                K = i;
+        int k = 0;
+        for (int i=0; i<p.length(); i++){
+            if (p[i] == '1'){
+                k = i;
                 break; //NOTA ALI: No se si es muy bueno meter un break dentro de aquí, mejor evitarlo
             }
         }
 
-
-        if (K == 0){
+        if (k == 0){
             st = r || st;
             r = g;
 
         }
-        if(K>1){ //NOTA ALI: Lo he cambiado a k>1 en vez de else, pq cuando k=1 no tiene que entrar aquí
+        if(k>1){ //NOTA ALI: Lo he cambiado a k>1 en vez de else, pq cuando k=1 no tiene que entrar aquí
             r = 0;
             st = 0;
         }
 
-        //Desplazar (P, g) a la izquierda K bits FALTA HACERLO //NOTA ALI: hecho pero revisar -> he metido por la derecha g
-        QString newP2 = QString::number(P); //Paso P a QString para poder trabajar con el mejor
-        newP2.remove(0, K); //Borramos las primeras K posiciones de P
-        for(int i=0; i<K; i++){ //Añadimas K veces por la derecha g
-
-            newP2 = newP2 + QString::number(g);
+        //Desplazar (p, g) a la izquierda k bits FALTA HACERLO //NOTA ALI: hecho pero revisar -> he metido por la derecha g
+        p.remove(0, k);
+        for(int i=0; i<k; i++){ //Añadimas K veces por la derecha g
+            p.append(QString::number(g));
         }
 
-        Pstring = newP2; //Actualizo valor de P en formato QString
-        P = newP2.toInt(); //Actualizao valor de P en formato int
-
-        //ajustar el exponente de la suma
-        exponenteSumaInt = exponenteSumaInt - K;
-        exponenteSuma = (char)exponenteSumaInt;
-
-
+        //Ajustar el exponente de la suma
+        exponenteSuma = exponenteSuma - k;
+        this->exponenteResultado = decimalABinario(exponenteSuma, 8);
 
     }
 
     //11. Redondear P
     int c2;
 
-    if ((r==1 && st ==1) || (r == 1 && st == 0 && P == 1)){
+    if ((r==1 && st ==1) || (r == 1 && st == 0 && p[p.length()-1] == '1')){
         //P = P+1
-        QString sumaP = sumaBinario(P, 00000000000000000000001); //NOTA ALI: he cambiado el 1 por 1 pero con 23 bits como tiene P porque sino creo que nuestro metodo no funciona
+        QString sumaP = sumaBinario(p, "00000000000000000000001"); //NOTA ALI: he cambiado el 1 por 1 pero con 23 bits como tiene P porque sino creo que nuestro metodo no funciona
         // C = acarreo
         if(sumaP.length() == 24){ //Esto significa que no ha habido acarreo en el utimo digito sumado
-
-            P = sumaP.toInt();
-            Pstring = sumaP;
-
+            p=sumaP;
             c2 = 0;
         }
         else{ //Si tiene más de 24 de longitud será que tiene 25 de longitud y es que ha habido acarreo en el ultimo digito sumado
 
             sumaP.remove(0, 1);
-            P = sumaP.toInt();
-            Pstring = sumaP;
-
+            p=sumaP;
             c2 = 1;
 
         }
 
         if (c2 == 1){
             //Desplazar un bit a la derecha (C2, P) y ajustar el exponente de la suma FALTA ESTA PARTE
-            QString newP3 = QString::number(P); //Paso P a QString para poder trabajar mejor con el
-            newP3.remove(newP3.length()-1, 1); //Quito el ultimo digito de P
-            newP3 = QString::number(c2) + newP3; //Le añado por delanter c2
+            p.remove(p.length()-1,1);
+            p.prepend(QString::number(c2));
 
-            Pstring = newP3; //Actualizo valor de P en formato QString
-            P = newP3.toInt(); //Actualizao valor de P en formato int
+            exponenteSuma = exponenteSuma + 1;
 
-            exponenteSumaInt = exponenteSumaInt + 1;
-            exponenteSuma = QString::number(exponenteSumaInt);
-
-            this->exponenteResultado = exponenteSumaInt; //NOTA ALI: ya asignamos al atributo de clase que representa el exponente del resultado el valor calculado
         }
 
 
     }
 
-    int mantisaSuma = P;
     //NOTA ALI: Aqui lo guardo ya en el atributo de clase que representa la mantisa del resultaddo:
-    this->mantisaResultado = P;
-
+    //Ya esta la mantisa calculada pero se normaliza quitandole el primer 1
+    this->mantisaResultado = p.remove(0,1);
+//HASTA AQUI REVISADO, 11 SIN DEBUG AUN
 
     //12. Calcular el signo del resultado
 
-    int signoSuma;
-
-    if (Operandos_intercambiados == false && Complemento_P == true){
-        signoSuma = signoBint;
-        this->signoResultado = signoBint;
+    if (operandos_intercambiados == false && complemento_P == true){
+        this->signoResultado = QString::number(signoB);
     } else{
-        signoSuma = signoAint;
-        this->signoResultado = signoAint;
+        this->signoResultado = QString::number(signoA);
     }
 
     //En este punto ya deberían estar guardados los valores de signo, exponente y mantisa en sus correspondientes atributos de clase,
      //para poder simplemente al clickar sobre el igual de la interfaz de usuario pasarlo a decimal y hexadecimal y mostrarlo
-*/
-    return QString::number(this->signoResultado) + QString::number(this->mantisaResultado) + QString::number(this->exponenteResultado);
+
+    return (this->signoResultado + " " +  this->exponenteResultado + " " + this->mantisaResultado);
 
 }
 
 QString alu::multiplicacion(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB){
     QString answer;
     //Hay que pasar los signos y los exponentes de QString a int
-    int signoAint = signoAString.toInt();
-    int signoBint = signoBString.toInt();
-    int exponenteAint = exponenteAString.toInt();
-    int exponenteBint = exponenteBString.toInt();
-    int mantisaAint =  mantisaA.toInt();
-    int mantisaBint = mantisaB.toInt();
+    int signoA = signoAString.toInt();
+    int signoB = signoBString.toInt();
+    int exponenteA = binarioADecimal(exponenteAString.toInt()); //No se si los exponenetes se trabajan en decimal o en binario
+    int exponenteB = binarioADecimal(exponenteBString.toInt());
+
 
     //1. Signo del producto es SignoA * SignoB
-    int signoProducto = signoAint * signoBint;
+    int signoProducto = signoA ^ signoB;
 
     //2. Exponente del producto es exponenteA + exponenteB
-    int exponenteProducto = exponenteAint + exponenteBint;
+    int exponenteProducto = exponenteA + exponenteB;
 
-    //3. Calculo de la mantisa del producto, mantisaProducto
-    //3.1 (P, A) = mantisaA * mantisaB (Entiendo yo que P es el resultado de la multiplicacion y A es el numero A que se multiplica)
-    int p= mantisaAint * mantisaBint;
-    //3.2 Si (Pn-1 =0) entonces se desplaza (P,A), un bit a la izquierda
-    //De int a Qstring
-    QString P;
-    P.setNum(p);
-    if (P[P.length()-1] == 0){
-        //Desplazar (P,A) un bit a la izquierda PANIC, EN ELLO
+    //3. Calculo de la mantisa del producto, mantisaProducto (MULTIPLICACION BINARIA SIN SIGNO)
+    //i
+    QString multiplicacionBinariaMantisas = multiplicacionBinaria(mantisaA, mantisaB);
+    QString p = multiplicacionBinariaMantisas.split(" ")[0];
+    QString a = multiplicacionBinariaMantisas.split(" ")[1];
 
+    //ii
+    if(p[0]=='0'){
 
-    } else{
-        exponenteProducto+=1;
+        p.remove(0,1);
+        p.append(a[0]);
+        a.remove(0,1);
+        a.append("0");
+    }else{
+
+        exponenteProducto++;
     }
-    //Creamos el bit de redondeo, por ahora int, con a n-1
-    //int r = ;
+
+    //iii
+    int r = a[0].digitValue();
+
+    //iv
+    int st;
+    int or1 = a[1].digitValue();
+
+    for(int i=2; i<a.length(); i++){
+
+        int OR = or1 || a[i].digitValue();
+        or1 = OR;
+    }
+
+    st = or1;
+
+    //v
+    if((r==1 && st==1) || (r==1 && st==0 && p[p.length()-1]=='0')){
+
+        p = sumaBinario(p, "000000000000000000000001");
+    }
+    //COMPROBACION DESBORDAMIENTOS (hacer)
+    //TRATAMIENTO ESPECIFICO CUANDO HAY OPERANDOS DENORMALES (hacer)
+    //mp = p (hacer)
 
     return answer;
 
@@ -406,5 +381,58 @@ int alu::binarioADecimal(int binario){
     }
 
     return dec;
+
+}
+
+//Metodo decimal a binario
+QString alu::decimalABinario(int numero,int longitud){
+    QString binario;
+    while (numero > 0) {
+        binario.prepend(QString::number(numero%2));
+        numero = numero / 2;
+    }
+
+    while (binario.length() < longitud) {
+        binario.prepend("0");
+    }
+
+    return binario;
+}
+
+QString alu::multiplicacionBinaria(QString mantisaA, QString mantisaB){
+
+    //1.Almacenar A, B y P
+    QString a = mantisaA;
+    QString b = mantisaB;
+    QString p = "000000000000000000000000";
+    int c;
+
+    for(int i=0; i<mantisaA.length(); i++){
+        //i
+        if(a[a.length()-1] == '1'){
+
+            QString suma = sumaBinario(p, b);
+            // C = acarreo
+            if(suma.length() == 24){ //Esto significa que no ha habido acarreo en el utimo digito sumado
+                p=suma;
+                c = 0;
+            }
+            else{ //Si tiene más de 24 de longitud será que tiene 25 de longitud y es que ha habido acarreo en el ultimo digito sumado
+
+                suma.remove(0, 1);
+                p=suma;
+                c = 1;
+
+            }
+        } //El else seria hacer p = p + 0
+        //ii
+        a.remove(a.length()-1,1);
+        a.prepend(p[p.length()-1]);
+        p.remove(p.length()-1,1);
+        p.prepend(QString::number(c));
+    }
+
+    //3.Producto: (P,A)
+    return p + " " + a;
 
 }

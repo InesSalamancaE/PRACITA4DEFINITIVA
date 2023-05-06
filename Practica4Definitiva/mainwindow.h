@@ -51,10 +51,12 @@ private slots:
 
     QString quitarEspacios(QString ieeeEspacio);
 
+    void on_botonClear_clicked();
+
 private:
     Ui::MainWindow *ui;
 
-    float numResDec;
+    QString numResDec;
 
     QString numABin;
     QString numBBin;
