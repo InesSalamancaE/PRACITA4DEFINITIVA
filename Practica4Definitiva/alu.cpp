@@ -265,7 +265,7 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
     int signoProducto = signoA ^ signoB;
 
     //2. Exponente del producto es exponenteA + exponenteB
-    int exponenteProducto = exponenteA + exponenteB;
+    int exponenteProducto = (exponenteA-127) + (exponenteB-127) +127; //Restamos a cada uno 127 y luego lo sumamos a la suma para que no desborde
 
     //3. Calculo de la mantisa del producto, mantisaProducto (MULTIPLICACION BINARIA SIN SIGNO)
     //i
@@ -305,9 +305,59 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
 
         p = sumaBinario(p, "000000000000000000000001");
     }
-    //COMPROBACION DESBORDAMIENTOS (hacer)
-    //TRATAMIENTO ESPECIFICO CUANDO HAY OPERANDOS DENORMALES (hacer)
+
+    //COMPROBACION DESBORDAMIENTOS
+    //1.Hay desbordamiento si el exponente del producto es mas mayor a 254
+    if (exponenteProducto>254){
+        //Hay desbordamiento infinito OJO, QUE NO SE QUE TIENE QUE DEVOLVER SI HAY DESBORDAMIENTO
+        return "overflow";
+    }
+    //2. underflow
+    int res;
+    if (exponenteProducto<1){ //Entendemos que el exponente mínimo es 1
+        res= 1 - exponenteProducto;
+        if (res>=24){ //Entendemos que el número de bits en la mantisa es 24
+            //Underflow
+            return "Underflow";
+        } else{
+            //Entramos en el apartado denormal, por tanto desplazamos aritméticamente (P,A), t bits a la derecha
+            for (int i=0; i<res; i++){
+                p.insert(p.begin(), 0);
+                p.pop_back();
+            }
+
+
+            //El exponente del producto es el exponente mínimo, es decir 1
+            exponenteProducto = 1;
+        }
+    }
+
+
+    //TRATAMIENTO ESPECIFICO CUANDO HAY OPERANDOS DENORMALES
+    int res1 = exponenteProducto - 1;
+    int res2 = ;
+    i = 0;
+    //Como el caso 1 es igual tratamiento de datos, no lo tenemos en cuenta
+
+    //Caso 2
+    if(exponenteProducto>1){
+        res = exponenteProducto -1;
+        while(res2==-1 && i<48){
+            if (p.at(i) == 1){
+                res2=i;
+            }
+        }
+
+        if(res1 < res2){
+
+        }
+    }
+
     //mp = p (hacer)
+
+
+
+
 
     return answer;
 
