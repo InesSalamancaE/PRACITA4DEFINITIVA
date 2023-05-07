@@ -346,15 +346,29 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
             if (p.at(i) == 1){
                 res2=i;
             }
+            i++;
         }
 
         if(res1 < res2){
-
+            res = res1;
+        } else{
+            res = res2;
+        }
+        exponenteProducto= res;
+        //Desplazar aritmeticamente (P,A) t bits a la izquierda
+        for (int e = 0; e < res; ++e) {
+            p.push_back(0);
+            p.erase(p.begin());
         }
     }
 
-    //mp = p (hacer)
+    //Caso 3, el resultado es directamente denormal
+    if (exponenteProducto == 1){
+        return "Denormal";
+    }
 
+    //mp = p DUDO QUE ESTO ESTË BIEN
+    mantisaResultado = p;
 
 
 
