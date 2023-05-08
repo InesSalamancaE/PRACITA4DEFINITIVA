@@ -253,19 +253,21 @@ QString alu::suma(QString signoAString, QString exponenteAString, QString mantis
 }
 
 QString alu::multiplicacion(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB){
-    QString answer;
     //Hay que pasar los signos y los exponentes de QString a int
     int signoA = signoAString.toInt();
     int signoB = signoBString.toInt();
-    int exponenteA = binarioADecimal(exponenteAString.toInt()); //No se si los exponenetes se trabajan en decimal o en binario
+    int exponenteA = binarioADecimal(exponenteAString.toInt());
     int exponenteB = binarioADecimal(exponenteBString.toInt());
+    int signoMultiplicacion;
+    int exponenteMultiplicacion;
+    int n = 24;
 
-
-    //1. Signo del producto es SignoA * SignoB
-    int signoProducto = signoA ^ signoB;
+    //1. Signo del producto es SignoA ^ SignoB
+    signoMultiplicacion = signoA ^ signoB;
+    this->signoResultado = QString::number(signoMultiplicacion);
 
     //2. Exponente del producto es exponenteA + exponenteB
-    int exponenteProducto = (exponenteA-127) + (exponenteB-127) +127; //Restamos a cada uno 127 y luego lo sumamos a la suma para que no desborde
+    exponenteMultiplicacion = (exponenteA-127) + (exponenteB-127) +127; //Restamos a cada uno 127 y luego lo sumamos a la suma para que no desborde
 
     //3. Calculo de la mantisa del producto, mantisaProducto (MULTIPLICACION BINARIA SIN SIGNO)
     //i
@@ -282,13 +284,14 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
         a.append("0");
     }else{
 
-        exponenteProducto++;
+        exponenteMultiplicacion++;
     }
 
-    //iii
+    //iii redondeo
+
     int r = a[0].digitValue();
 
-    //iv
+    //iv sticky
     int st;
     int or1 = a[1].digitValue();
 
@@ -300,48 +303,46 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
 
     st = or1;
 
-    //v
-    if((r==1 && st==1) || (r==1 && st==0 && p[p.length()-1]=='0')){
+    //v redondeo
+    if((r==1 && st==1) || (r==1 && st==0 && p[p.length()-1]=='1')){
 
         p = sumaBinario(p, "000000000000000000000001");
     }
 
     //COMPROBACION DESBORDAMIENTOS
     //1.Hay desbordamiento si el exponente del producto es mas mayor a 254
-    if (exponenteProducto>254){
+    if (exponenteMultiplicacion>254){
         //Hay desbordamiento infinito OJO, QUE NO SE QUE TIENE QUE DEVOLVER SI HAY DESBORDAMIENTO
-        return "overflow";
+        return "Inf";
     }
     //2. underflow
     int t;
-    if (exponenteProducto<1){ //Entendemos que el exponente mínimo es 1
-        t= 1 - exponenteProducto;
+    if (exponenteMultiplicacion<1){ //Entendemos que el exponente mínimo es 1
+        t= 1 - exponenteMultiplicacion;
         if (t>=24){ //Entendemos que el número de bits en la mantisa es 24
             //Underflow
-            return "Underflow";
+            return "NaN";
         } else{
             //Entramos en el apartado denormal, por tanto desplazamos aritméticamente (P,A), t bits a la derecha
             for (int i=0; i<t; i++){
                 p.prepend(0);
                 p.chop(1);
             }
-
-
             //El exponente del producto es el exponente mínimo, es decir 1
-            exponenteProducto = 1;
+                exponenteMultiplicacion = 1;
         }
     }
 
 
     //TRATAMIENTO ESPECIFICO CUANDO HAY OPERANDOS DENORMALES
-    int t1 = exponenteProducto - 1;
+    int t1 = exponenteMultiplicacion - 1;
     int t2 = -1; //Es el número de bits que es necesario desplazar (P,A) hacia la izquierda para que la mantisa quede normalizada Y CREO QUE ESTÁ MAL :)
     int i = 0;
     //Como el caso 1 es igual tratamiento de datos, no lo tenemos en cuenta
 
     //Caso 2
-    if(exponenteProducto>1){
-        t = exponenteProducto -1;
+    if(exponenteMultiplicacion>1){
+        t = exponenteMultiplicacion -1;
         while(t2==-1 && i<48){
             if (p.at(i) == '1'){
                 t2=i;
@@ -354,7 +355,7 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
         } else{
             t = t2;
         }
-        exponenteProducto= t;
+        exponenteMultiplicacion = exponenteMultiplicacion - t;
         //Desplazar aritmeticamente (P,A) t bits a la izquierda
         for (int e = 0; e < t; ++e) {
             p.prepend(0);
@@ -363,26 +364,19 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
     }
 
     //Caso 3, el resultado es directamente denormal
-    if (exponenteProducto == 1){
-        return "Denormal";
+    if (exponenteMultiplicacion  == 1){
+        return "denormal";
     }
         //------------------------HASSTA AQUI TIENE SENTIDO----------------------------------
-    //mp = p DUDO QUE ESTO ESTË BIEN
-    mantisaResultado = p;
 
-    this->signoResultado = QString::number(signoProducto);
-    this->exponenteResultado = QString::number(exponenteProducto);
-    this->mantisaResultado = p;
-
-
+    //mp = p
+    this->exponenteResultado=decimalABinario(exponenteMultiplicacion,8);
+    this->mantisaResultado = p.remove(0,1);
     return (this->signoResultado + " " +  this->exponenteResultado + " " + this->mantisaResultado);
 
+
 }
-
-
 QString alu::division(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB){
-    QString answer;
-
     //1. Escalar a y b de tal forma que b pertenezca a [1,2)
     //Variables auxiliares
     float aS=1;
@@ -395,11 +389,11 @@ QString alu::division(QString signoAString, QString exponenteAString, QString ma
 
     //2.Buscar una solución aproximada b'=1/b en una tabla
     /*Según la tabla de la explicación;
-     * b'=1.00 si b=[1,1.25)
-     * y
-     * b'=0.80 si b=[1.25,2)
-     * Por tanto:
-     * */
+        * b'=1.00 si b=[1,1.25)
+        * y
+        * b'=0.80 si b=[1.25,2)
+        * Por tanto:
+    * */
 
     float bP=0;
     if (bS >= 1 && bS < 1.25){
@@ -415,13 +409,7 @@ QString alu::division(QString signoAString, QString exponenteAString, QString ma
     //x0= multiplicacion();
     //x0= multiplicacion();
 
-
-
-
-    return answer;
 }
-
-
 
 QString alu::complemento2(QString mantisa){
     //Alba:La suma 1 va despues de hacer el cambio de 1 por 0 y viceversa, he quitado el mantisaInt
@@ -505,15 +493,15 @@ QString alu::decimalABinario(int numero,int longitud){
     return binario;
 }
 
-QString alu::multiplicacionBinaria(QString mantisaA, QString mantisaB){
-
+QString alu::multiplicacionBinaria(QString mantisaA, QString mantisaB){ //Alba:Hay que debuggear bien esto, no lo hace bien, saca mas bits de los necesarios.
+    int n =24;
     //1.Almacenar A, B y P
     QString a = mantisaA;
     QString b = mantisaB;
     QString p = "000000000000000000000000";
     int c;
 
-    for(int i=0; i<mantisaA.length(); i++){
+    for(int i=0; i<n; i++){
         //i
         if(a[a.length()-1] == '1'){
 
@@ -530,7 +518,9 @@ QString alu::multiplicacionBinaria(QString mantisaA, QString mantisaB){
                 c = 1;
 
             }
-        } //El else seria hacer p = p + 0
+        }else{
+            c=0;//El else seria hacer p = p + 0
+        }
         //ii
         a.remove(a.length()-1,1);
         a.prepend(p[p.length()-1]);
