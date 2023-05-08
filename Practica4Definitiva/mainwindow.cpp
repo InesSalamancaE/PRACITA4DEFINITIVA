@@ -58,10 +58,9 @@ void MainWindow::on_botonSuma_clicked()
     //------------ Si funciona, pero como la suma da cosas raras, peta el programa, cuando de bien, descomentamos !!!!!!!!!!!!!!!!
     //Se pasa el resultado de suma binaria a decimal
     if(numResBin=="0 11111111 00000000000000000000000"){
-        numResDec = "Infinite ochotumbao";
+        numResDec = "Inf";
     }else{
-        //numResDec = binarioADecimal(quitarEspacios(numResBin));
-        numResDec = QString::number(numA.flo+numB.flo);
+        numResDec = QString::number(binarioADecimal(quitarEspacios(numResBin)));
     }
 
     //Se pasa el resultado de suma binaria a hexadecimal
@@ -99,11 +98,19 @@ void MainWindow::on_botonMultiplicacion_clicked()
     numResBin=alu.multiplicacion(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
 
     //Se pasa el resultado de multiplicación binaria a decimal
-    numResDec=binarioADecimal(quitarEspacios(numResBin));
-    //numResDec = QString::number(numA.flo*numB.flo);
+    if(numResBin.length()<30){
+        numResDec=numResBin;
+    }else{
+        numResDec=QString::number(binarioADecimal(quitarEspacios(numResBin)));
+    }
+
 
     //Se pasa el resultado de multiplicación binaria a hexadecimal
-    numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
+    if(numResBin.length()<30){
+        numResHex=numResBin;
+    }else{
+       numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
+    }
 
 }
 
@@ -137,10 +144,8 @@ void MainWindow::on_botonDivision_clicked()
     //Se dividen los binarios
     //numResBin=alu.division(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
 
-
     //Se pasa el resultado de división binaria a decimal
-    //numResDec=binarioADecimal(quitarEspacios(numResBin));
-    numResDec = QString::number(numA.flo/numB.flo);
+    //numResDec=QString::number(binarioADecimal(quitarEspacios(numResBin)));
 
     //Se pasa el resultado de división binaria a hexadecimal
     //numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
@@ -169,13 +174,10 @@ QString MainWindow::decimalABinario(int numero,int longitud){
     return binario;
 }
 
-QString MainWindow::binarioADecimal(QString binario){
+float MainWindow::binarioADecimal(QString binario){
     unsigned long long numeroEntero = std::bitset<32>(binario.toStdString()).to_ulong();
     float numeroDecimal = *(float*)&numeroEntero;
-    std::stringstream stream;
-    stream << std::fixed << std::setprecision(2) << numeroDecimal;
-    QString numeroQString = QString::fromStdString(stream.str());
-    return numeroQString;
+    return numeroDecimal;
 }
 
 QString MainWindow::binarioAHexadecimal(QString binario){
@@ -183,7 +185,6 @@ QString MainWindow::binarioAHexadecimal(QString binario){
     unsigned long long numeroEntero = std::bitset<64>(binario.toStdString()).to_ullong();
     QString numeroHexadecimal = QString::number(numeroEntero, 16);
     numeroHexadecimal.prepend("0x");
-
     return numeroHexadecimal;
 }
 
