@@ -376,10 +376,50 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
     return answer;
 
 }
-QString alu::division(){
+
+
+QString alu::division(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB){
     QString answer;
+
+    //1. Escalar a y b de tal forma que b pertenezca a [1,2)
+    //Variables auxiliares
+    float aS=1;
+    float bS = 1;
+    //Escalamos con un bulce for
+    for(int i=1;i<24; i++){
+        aS = aS + mantisaA[i].digitValue() * (2 * -i);
+        bS = bS + mantisaB[i].digitValue() * (2 * -i);
+    }
+
+    //2.Buscar una solución aproximada b'=1/b en una tabla
+    /*Según la tabla de la explicación;
+     * b'=1.00 si b=[1,1.25)
+     * y
+     * b'=0.80 si b=[1.25,2)
+     * Por tanto:
+     * */
+
+    float bP=0;
+    if (bS >= 1 && bS < 1.25){
+        bP =1;
+    } else if(bS >= 1.25 && bS < 2){
+        bP=0.80;
+    }
+
+    //3. Asignar x0=a*b' ; y0=b*b'
+    float x0;
+    float y0;
+    //Aquí lo suyo es multiplicar con el método que ya tenemos
+    //x0= multiplicacion();
+    //x0= multiplicacion();
+
+
+
+
     return answer;
 }
+
+
 
 QString alu::complemento2(QString mantisa){
     //Alba:La suma 1 va despues de hacer el cambio de 1 por 0 y viceversa, he quitado el mantisaInt

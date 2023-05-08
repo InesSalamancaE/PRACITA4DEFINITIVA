@@ -12,7 +12,7 @@ public:
 
     QString multiplicacion(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB);
 
-    QString division();
+    QString division(QString signoAString, QString exponenteAString, QString mantisaA, QString signoBString, QString exponenteBString, QString mantisaB);
 
     QString complemento2(QString num);
 
