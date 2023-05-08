@@ -313,17 +313,17 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
         return "overflow";
     }
     //2. underflow
-    int res;
+    int t;
     if (exponenteProducto<1){ //Entendemos que el exponente mínimo es 1
-        res= 1 - exponenteProducto;
-        if (res>=24){ //Entendemos que el número de bits en la mantisa es 24
+        t= 1 - exponenteProducto;
+        if (t>=24){ //Entendemos que el número de bits en la mantisa es 24
             //Underflow
             return "Underflow";
         } else{
             //Entramos en el apartado denormal, por tanto desplazamos aritméticamente (P,A), t bits a la derecha
-            for (int i=0; i<res; i++){
-                p.insert(p.begin(), 0);
-                p.pop_back();
+            for (int i=0; i<t; i++){
+                p.prepend(0);
+                p.chop(1);
             }
 
 
@@ -334,31 +334,31 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
 
 
     //TRATAMIENTO ESPECIFICO CUANDO HAY OPERANDOS DENORMALES
-    int res1 = exponenteProducto - 1;
-    int res2 = ;
-    i = 0;
+    int t1 = exponenteProducto - 1;
+    int t2 = -1; //Es el número de bits que es necesario desplazar (P,A) hacia la izquierda para que la mantisa quede normalizada
+    int i = 0;
     //Como el caso 1 es igual tratamiento de datos, no lo tenemos en cuenta
 
     //Caso 2
     if(exponenteProducto>1){
-        res = exponenteProducto -1;
-        while(res2==-1 && i<48){
-            if (p.at(i) == 1){
-                res2=i;
+        t = exponenteProducto -1;
+        while(t2==-1 && i<48){
+            if (p.at(i) == '1'){
+                t2=i;
             }
             i++;
         }
 
-        if(res1 < res2){
-            res = res1;
+        if(t1 < t2){
+           t = t1;
         } else{
-            res = res2;
+            t = t2;
         }
-        exponenteProducto= res;
+        exponenteProducto= t;
         //Desplazar aritmeticamente (P,A) t bits a la izquierda
-        for (int e = 0; e < res; ++e) {
-            p.push_back(0);
-            p.erase(p.begin());
+        for (int e = 0; e < t; ++e) {
+            p.prepend(0);
+            p.chop(1);
         }
     }
 

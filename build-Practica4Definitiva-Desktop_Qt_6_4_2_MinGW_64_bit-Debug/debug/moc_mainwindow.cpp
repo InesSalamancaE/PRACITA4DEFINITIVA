@@ -26,7 +26,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_MainWindow_t {
-    uint offsetsAndSizes[36];
+    uint offsetsAndSizes[38];
     char stringdata0[11];
     char stringdata1[21];
     char stringdata2[1];
@@ -45,6 +45,7 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata15[13];
     char stringdata16[15];
     char stringdata17[12];
+    char stringdata18[22];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_MainWindow_t::offsetsAndSizes) + ofs), len 
@@ -67,7 +68,8 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
         QT_MOC_LITERAL(217, 3),  // "var"
         QT_MOC_LITERAL(221, 12),  // "numIEEEJunto"
         QT_MOC_LITERAL(234, 14),  // "quitarEspacios"
-        QT_MOC_LITERAL(249, 11)   // "ieeeEspacio"
+        QT_MOC_LITERAL(249, 11),  // "ieeeEspacio"
+        QT_MOC_LITERAL(261, 21)   // "on_botonClear_clicked"
     },
     "MainWindow",
     "on_botonSuma_clicked",
@@ -86,7 +88,8 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
     "var",
     "numIEEEJunto",
     "quitarEspacios",
-    "ieeeEspacio"
+    "ieeeEspacio",
+    "on_botonClear_clicked"
 };
 #undef QT_MOC_LITERAL
 } // unnamed namespace
@@ -97,7 +100,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -105,16 +108,17 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   74,    2, 0x08,    1 /* Private */,
-       3,    0,   75,    2, 0x08,    2 /* Private */,
-       4,    0,   76,    2, 0x08,    3 /* Private */,
-       5,    0,   77,    2, 0x08,    4 /* Private */,
-       6,    2,   78,    2, 0x08,    5 /* Private */,
-       9,    1,   83,    2, 0x08,    8 /* Private */,
-      11,    1,   86,    2, 0x08,   10 /* Private */,
-      12,    1,   89,    2, 0x08,   12 /* Private */,
-      15,    1,   92,    2, 0x08,   14 /* Private */,
-      16,    1,   95,    2, 0x08,   16 /* Private */,
+       1,    0,   80,    2, 0x08,    1 /* Private */,
+       3,    0,   81,    2, 0x08,    2 /* Private */,
+       4,    0,   82,    2, 0x08,    3 /* Private */,
+       5,    0,   83,    2, 0x08,    4 /* Private */,
+       6,    2,   84,    2, 0x08,    5 /* Private */,
+       9,    1,   89,    2, 0x08,    8 /* Private */,
+      11,    1,   92,    2, 0x08,   10 /* Private */,
+      12,    1,   95,    2, 0x08,   12 /* Private */,
+      15,    1,   98,    2, 0x08,   14 /* Private */,
+      16,    1,  101,    2, 0x08,   16 /* Private */,
+      18,    0,  104,    2, 0x08,   18 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -127,6 +131,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
     QMetaType::QString, 0x80000000 | 13,   14,
     QMetaType::QString, 0x80000000 | 13,   14,
     QMetaType::QString, QMetaType::QString,   17,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -166,7 +171,9 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<MainWindow::floatNum, std::false_type>,
         // method 'quitarEspacios'
         QtPrivate::TypeAndForceComplete<QString, std::false_type>,
-        QtPrivate::TypeAndForceComplete<QString, std::false_type>
+        QtPrivate::TypeAndForceComplete<QString, std::false_type>,
+        // method 'on_botonClear_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
 } };
@@ -193,6 +200,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
         case 9: { QString _r = _t->quitarEspacios((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
+        case 10: _t->on_botonClear_clicked(); break;
         default: ;
         }
     }
@@ -217,13 +225,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 10)
+        if (_id < 11)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 10;
+        _id -= 11;
     }
     return _id;
 }
