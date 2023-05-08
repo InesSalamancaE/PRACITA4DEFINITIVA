@@ -335,7 +335,7 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
 
     //TRATAMIENTO ESPECIFICO CUANDO HAY OPERANDOS DENORMALES
     int t1 = exponenteProducto - 1;
-    int t2 = -1; //Es el número de bits que es necesario desplazar (P,A) hacia la izquierda para que la mantisa quede normalizada
+    int t2 = -1; //Es el número de bits que es necesario desplazar (P,A) hacia la izquierda para que la mantisa quede normalizada Y CREO QUE ESTÁ MAL :)
     int i = 0;
     //Como el caso 1 es igual tratamiento de datos, no lo tenemos en cuenta
 
@@ -370,10 +370,12 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
     //mp = p DUDO QUE ESTO ESTË BIEN
     mantisaResultado = p;
 
+    this->signoResultado = QString::number(signoProducto);
+    this->exponenteResultado = QString::number(exponenteProducto);
+    this->mantisaResultado = p;
 
 
-
-    return answer;
+    return (this->signoResultado + " " +  this->exponenteResultado + " " + this->mantisaResultado);
 
 }
 

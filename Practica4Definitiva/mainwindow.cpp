@@ -96,14 +96,14 @@ void MainWindow::on_botonMultiplicacion_clicked()
     mantisaB.prepend("1");
 
     //Se multiplican los binarios
-    //numResBin=alu.multiplicacion(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
+    numResBin=alu.multiplicacion(signoA, exponenteA, mantisaA, signoB, exponenteB, mantisaB);
 
     //Se pasa el resultado de multiplicación binaria a decimal
-    //numResDec=binarioADecimal(quitarEspacios(numResBin));
-    numResDec = QString::number(numA.flo*numB.flo);
+    numResDec=binarioADecimal(quitarEspacios(numResBin));
+    //numResDec = QString::number(numA.flo*numB.flo);
 
     //Se pasa el resultado de multiplicación binaria a hexadecimal
-    //numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
+    numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
 
 }
 
