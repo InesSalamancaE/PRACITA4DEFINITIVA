@@ -366,7 +366,7 @@ QString alu::multiplicacion(QString signoAString, QString exponenteAString, QStr
     if (exponenteProducto == 1){
         return "Denormal";
     }
-
+        //------------------------HASSTA AQUI TIENE SENTIDO----------------------------------
     //mp = p DUDO QUE ESTO ESTË BIEN
     mantisaResultado = p;
 
