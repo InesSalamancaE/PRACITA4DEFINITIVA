@@ -397,17 +397,68 @@ QString alu::division(QString signoAString, QString exponenteAString, QString ma
 
     float bP=0;
     if (bS >= 1 && bS < 1.25){
-        bP =1;
+        bP =1.00;
     } else if(bS >= 1.25 && bS < 2){
         bP=0.80;
     }
 
     //3. Asignar x0=a*b' ; y0=b*b'
-    float x0;
-    float y0;
+    QString x0;
+    QString y0;
     //Aquí lo suyo es multiplicar con el método que ya tenemos
-    //x0= multiplicacion();
-    //x0= multiplicacion();
+    //Pasamos b' a binario
+    QString bPrima = alu::decimalABinario(bP, 33);
+    //Dividimos en signo exponente y mantisa
+    QString bPrimaSigno = bPrima[0];
+    QString bPrimaExponente;
+    for (int var = 1; var < 9; ++var) {
+        bPrimaExponente.append(bPrima[var]);
+    }
+    QString bPrimaMantisa;
+    for (int var = 9; var < 33; ++var) {
+        bPrimaMantisa.append(bPrima[var]);
+    }
+
+    //x0=a*b'
+    x0= multiplicacion(signoAString, exponenteAString, mantisaA, bPrimaSigno, bPrimaExponente, bPrimaMantisa);
+
+    //y0=b*b'
+    y0= multiplicacion(signoBString, exponenteBString, mantisaB, bPrimaSigno, bPrimaExponente, bPrimaMantisa);
+
+    //4. Iterar, tenemos que conseguir que x1 - x0 > 10^-4
+    int e;
+    bool itera = false;
+    int r;
+    int y = alu::binarioADecimal(y0.toInt());
+    int x = alu::binarioADecimal(x0.toInt());
+    int yAux;
+    int xAux;
+
+    //Pasamos a decimal para operar
+
+
+    while(itera == false){
+
+        r=2-y;
+        yAux=y*r;
+        xAux=x*r;
+        e++;
+        if(xAux-x>(10^(-4))){
+            y = yAux;
+            x = xAux;
+        } else{
+            itera = true;
+        }
+
+    }
+
+    //Tomamos el valor de x de la iteración e como una aproximación de A* 1/B
+    //Calculamos signo exponente y mantisa
+    //SignoDivisión= SignoA XOR SignoB =0 XOR 0=0
+
+    //Exponente: ExponenteA - ExponenteB + Exponente
+
+    //Juntamos el resultado final
 
 }
 

@@ -109,7 +109,7 @@ void MainWindow::on_botonMultiplicacion_clicked()
     if(numResBin.length()<30){
         numResHex=numResBin;
     }else{
-       numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
+        numResHex=binarioAHexadecimal(quitarEspacios(numResBin));
     }
 
 }
@@ -226,4 +226,3 @@ void MainWindow::on_botonClear_clicked()
     this->ui->hexa2->setText("");
     this->ui->hexaResultado->setText("");
 }
-

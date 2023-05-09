@@ -41,7 +41,7 @@ private slots:
 
     QString decimalABinario(int numero, int longitud);
 
-    QString binarioADecimal(QString binario);
+    float binarioADecimal(QString binario);
 
     QString binarioAHexadecimal(QString binario);
 

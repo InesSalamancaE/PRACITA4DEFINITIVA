@@ -126,7 +126,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::QString, QMetaType::Int, QMetaType::Int,    7,    8,
-    QMetaType::QString, QMetaType::QString,   10,
+    QMetaType::Float, QMetaType::QString,   10,
     QMetaType::QString, QMetaType::QString,   10,
     QMetaType::QString, 0x80000000 | 13,   14,
     QMetaType::QString, 0x80000000 | 13,   14,
@@ -158,7 +158,7 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'binarioADecimal'
-        QtPrivate::TypeAndForceComplete<QString, std::false_type>,
+        QtPrivate::TypeAndForceComplete<float, std::false_type>,
         QtPrivate::TypeAndForceComplete<QString, std::false_type>,
         // method 'binarioAHexadecimal'
         QtPrivate::TypeAndForceComplete<QString, std::false_type>,
@@ -190,8 +190,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->on_botonDivision_clicked(); break;
         case 4: { QString _r = _t->decimalABinario((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
-        case 5: { QString _r = _t->binarioADecimal((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])));
-            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
+        case 5: { float _r = _t->binarioADecimal((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])));
+            if (_a[0]) *reinterpret_cast< float*>(_a[0]) = std::move(_r); }  break;
         case 6: { QString _r = _t->binarioAHexadecimal((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
         case 7: { QString _r = _t->numIEEE((*reinterpret_cast< std::add_pointer_t<MainWindow::floatNum>>(_a[1])));
